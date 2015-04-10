@@ -383,28 +383,28 @@ class UnknownNetworkError {
 	+Timeout():bool
 }
 
-Conn <|.. IPConn
-Conn <|.. TCPConn
-Conn <|.. UDPConn
-Conn <|.. UnixConn
+Conn <|-- IPConn
+Conn <|-- TCPConn
+Conn <|-- UDPConn
+Conn <|-- UnixConn
 
-PacketConn <|.. IPConn
+PacketConn <|-- IPConn
 
-Listener <|.. TCPListener
-Listener <|.. UnixListener
+Listener <|-- TCPListener
+Listener <|-- UnixListener
 
-Addr <|.. IPAddr
-Addr <|.. TCPAddr
-Addr <|.. UDPAddr
-Addr <|.. UnixAddr
-Addr <|.. IPNet
+Addr <|-- IPAddr
+Addr <|-- TCPAddr
+Addr <|-- UDPAddr
+Addr <|-- UnixAddr
+Addr <|-- IPNet
 
-Error <|.. AddrError
-Error <|.. DNSConfigError
-Error <|.. DNSError
-Error <|.. InvalidAddrError
-Error <|.. OpError
-Error <|.. UnknownNetworkError
+Error <|-- AddrError
+Error <|-- DNSConfigError
+Error <|-- DNSError
+Error <|-- InvalidAddrError
+Error <|-- OpError
+Error <|-- UnknownNetworkError
 
 note top of net: package "net", defined as class just for generate diagram
 
