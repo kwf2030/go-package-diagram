@@ -1,0 +1,177 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class io {
+	+{static} EOF = errors.New("EOF")
+	+{static} ErrClosedPipe = errors.New("io: read/write on closed pipe")
+	+{static} ErrNoProgress = errors.New("multiple Read calls return no data or error")
+	+{static} ErrShortBuffer = errors.New("short buffer")
+	+{static} ErrShortWrite = errors.New("short write")
+	+{static} ErrUnexpectedEOF = errors.New("unexpected EOF")
+
+	+{static} Copy(Writer, Reader):(int64, error)
+	+{static} CopyN(Writer, Reader, int64):(int64, error)
+	+{static} ReadAtLeast(Reader, []byte], int):(int, error)
+	+{static} ReadFull(Reader, []byte):(int, error)
+	+{static} WriteString(Writer, string):(int, error)
+
+	+{static} Pipe():(*PipeReader, *PipeWriter)
+
+	+{static} LimitReader():(Reader, int64):Reader
+	+{static} MultiReader(...Reader):Reader
+	+{static} TeeReader(Reader, Writer):Reader
+
+	+{static} NewSectionReader(ReaderAt, int64, int64):*SectionReader
+
+	+{static} MultiWriter(...Writer):Writer
+}
+
+interface ByteReader {
+	ReadByte():(byte, error)
+}
+
+interface ByteScanner {
+	ByteReader
+	UnreadByte():error
+}
+
+interface ByteWriter {
+	WriteByte(byte):error
+}
+
+interface Closer {
+	Close():error
+}
+
+class LimitedReader {
+	R:Reader
+	N:int64
+	Read([]byte):(int, error)
+}
+
+class PipeReader {
+	Close():error
+	CloseWithError(error):error
+	Read([]byte):(int, error)
+}
+
+class PipeWriter {
+	Close():error
+	CloseWithError(error):error
+	Write([]byte):(int, error)
+}
+
+interface ReadCloser {
+	Reader
+	Closer
+}
+
+interface ReadSeeker {
+	Reader
+	Seeker
+}
+
+interface ReadWriteCloser {
+	Reader
+	Writer
+	Closer
+}
+
+interface ReadWriteSeeker {
+	Reader
+	Writer
+	Seeker
+}
+
+interface ReadWriter {
+	Reader
+	Writer
+}
+
+interface Reader {
+	Read([]byte):(int, error)
+}
+
+interface ReaderAt {
+	ReadAt([]byte, int64):(int, error)
+}
+
+interface ReaderFrom {
+	ReadFrom(Reader):(int64, error)
+}
+
+interface RuneReader {
+	ReadRune():(rune, int, error)
+}
+
+interface RuneScanner {
+	RuneReader
+	UnreadRune():error
+}
+
+class SectionReader {
+	Read([]byte):(int, error)
+	ReadAt([]byte, int64):(int, error)
+	Seek(int64, int):(int64, error)
+	Size():int64
+}
+
+interface Seeker {
+	Seek(int64, int):(int64, error)
+}
+
+interface WriteCloser {
+	Writer
+	Closer
+}
+
+interface WriteSeeker {
+	Writer
+	Seeker
+}
+
+interface Writer {
+	Write([]byte):(int, error)
+}
+
+interface WriterAt {
+	WriteAt([]byte, int64):(int, error)
+}
+
+interface WriterTo {
+	WriteTo(Writer):(int64, error)
+}
+
+ByteScanner ..|> ByteReader
+LimitedReader --|> Reader
+PipeReader  --|> Reader
+PipeReader --|> Closer
+PipeWriter --|> Writer
+PipeWriter --|> Closer
+ReadCloser ..|> Reader
+ReadCloser ..|> Closer
+ReadSeeker ..|> Reader
+ReadSeeker ..|> Seeker
+ReadWriteCloser ..|> Reader
+ReadWriteCloser ..|> Writer
+ReadWriteCloser ..|> Closer
+ReadWriteSeeker ..|> Reader
+ReadWriteSeeker ..|> Writer
+ReadWriteSeeker ..|> Seeker
+ReadWriter ..|> Reader
+ReadWriter ..|> Writer
+RuneScanner ..|> RuneReader
+SectionReader --|> Reader
+SectionReader --|> ReaderAt
+SectionReader --|> Seeker
+WriteCloser ..|> Writer
+WriteCloser ..|> Closer
+WriteSeeker ..|> Writer
+WriteSeeker ..|> Seeker
+
+note top of io: package "io", defined as class just for generate diagram
+
+@enduml
