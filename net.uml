@@ -1,0 +1,411 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class net {
+	+{static} IPv4len = 4
+	+{static} IPv6len = 16
+
+	+{static} IPv6zero = IP{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	+{static} IPv6unspecified = IP{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	+{static} IPv6loopback = IP{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
+	+{static} IPv6interfacelocalallnodes = IP{0xff, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x01}
+	+{static} IPv6linklocalallnodes = IP{0xff, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x01}
+	+{static} IPv6linklocalallrouters = IP{0xff, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x02}
+
+	+{static} IPv4bcast = IPv4(255, 255, 255, 255)
+	+{static} IPv4ballsys = IPv4(224, 0, 0, 1)
+	+{static} IPv4ballrouter = IPv4(224, 0, 0, 2)
+	+{static} IPv4zero = IPv4(0, 0, 0, 0)
+
+	+{static} ErrWriteToConnected = errors.New("use of WriteTo with pre-connected connection")
+
+	+{static} InterfaceAddrs():([]Addr, error)
+	+{static} Interfaces():([]Interface, error)
+	+{static} JoinHostPort(string, string):string
+	+{static} LoopupAddr(string):([]string, error)
+	+{static} LookupCName(string):(string, error)
+	+{static} LookupHost(string):([]string, error)
+	+{static} LoopupIP(string):([]IP, error)
+	+{static} LoopupMX(string):([]*MX, error)
+	+{static} LookupNS(string):([]*NS, error)
+	+{static} LookupPort(string, string):(int, error)
+	+{static} LookupSRV(string, string, string):(string, []*SRV, error)
+	+{static} LookupTXT(string):([]string, error)
+	+{static} SplitHostPort(string):(string, string, error)
+
+	+{static} Dial(string, string):(Conn, error)
+	+{static} DialTimeout(string, string, time.Duration):(Conn, error)
+	+{static} FileConn(*os.File):(Conn, error)
+	+{static} Pipe():(Conn, Conn)
+
+	+{static} ParseMac(string):(HardwareAddr, error)
+
+	+{static} IPv4(byte, byte, byte, byte):IP
+	+{static} ParseCIDR(string):(IP, *IPNet, error)
+	+{static} ParseIP(string):IP
+
+	+{static} ResolveIPAddr(string, string):(*IPAddr, error)
+
+	+{static} DialIP(string, *IPAddr, *IPAddr):(*IPConn, error)
+	+{static} ListenIP(string, *IPAddr):(*IPConn, error)
+
+	+{static} CIDRMask(int, int):IPMask
+	+{static} IPv4Mask(byte, byte, byte, byte):IPMask
+
+	+{static} InterfaceByIndex(int):(*Interface, error)
+	+{static} InterfaceByName(string):(*Interface, error)
+
+	+{static} FileListener(*os.File):(Listener, error)
+	+{static} Listen(string, string):(Listener, error)
+
+	+{static} FilePacketConn(*os.File):(PacketConn, error)
+	+{static} ListenPacket(string, string):(PacketConn, error)
+
+	+{static} ResolveTCPAddr(string, string):(*TCPAddr, error)
+
+	+{static} DialTCP(string, *TCPAddr, *TCPAddr):(*TCPConn, error)
+	+{static} ListenTCP(string, *TCPAddr):(*TCPListener, error)
+
+	+{static} ResolveUDPAddr(string, string):(*UDPAddr, error)
+
+	+{static} DialUDP(string, *UDPAddr, *UDPAddr):(*UDPConn, error)
+	+{static} ListenMulticastUDP(string, *Interface, *UDPAddr):(*UDPConn, error)
+	+{static} ListenUDP(string, *UDPAddr):(*UDPConn, error)
+
+	+{static} ResolveUnixAddr(string, string):(*UnixAddr, error)
+
+	+{static} DialUnix(string, *UnixAddr, *UnixAddr):(*UnixConn, error)
+	+{static} ListenUnixgram(string, *UnixAddr):(*UnixConn, error)
+
+	+{static} ListenUnix(string, *UnixAddr):(*UnixListener, error)
+}
+
+interface Addr {
+	+Network():string
+	+String():string
+}
+
+class AddrError {
+	+Err:string
+	+Addr:string
+	+Error():bool
+	+Temporary():bool
+	+Timeout():bool
+}
+
+interface Conn {
+	+Read([]byte):(int, error)
+	+Write([]byte):(int, error)
+	+Close():error
+	+LocalAddr():Addr
+	+RemoteAddr():Addr
+	+SetDeadline(time.Time):error
+	+setReadDeadline(time.Time):error
+	+SetWriteDeadline(time.Time):error
+}
+
+class DNSConfigError {
+	+Err:error
+	Error():string
+	Temporary():bool
+	Timeout():bool
+}
+
+class DNSError {
+	+Err:string
+	+Name:string
+	+Server:string
+	+IsTimeout:bool
+	+Error():string
+	+Temporary():bool
+	+Timeout():bool
+}
+
+class Dialer {
+	+Timeout:time.Duration
+	+Deadline:time.Time
+	+LocalAddr:Addr
+	+DualStack:bool
+	+KeepAlive:time.Duration
+	+Dial(string, string):(Conn, error)
+}
+
+interface Error {
+	+error
+	+Timeout():bool
+	+Temporary():bool
+}
+
+class Flags(uint) {
+	+FlagUp:Flags 1<<iota
+	+FlagBroadcast:Flags
+	+FlagLoopback:Flags
+	+FlagPointToPoint:Flags
+	+FlagMulticast:Flags
+}
+
+class HardwareAddr([]byte){
+	+String():string
+}
+
+class IP([]byte) {
+	+DefaultMask():IPMask
+	+Equal(IP):bool
+	+IsGlobalUnicast():bool
+	+IsInterfaceLocalMulticast():bool
+	+IsLinkLocalMulticast():bool
+	+IsLinkLocalUnicast():bool
+	+IsLoopback():bool
+	+IsMulticast():bool
+	+IsUnspecified():bool
+	+MarshalText():([]byte, error)
+	+Mask(IPMask):IP
+	+String():string
+	+To16():IP
+	+To4():IP
+	+UnmarshalText([]byte):error
+}
+
+class IPAddr {
+	+IP:IP
+	+Zone:string
+	+Network():string
+	+String():string
+}
+
+class IPConn {
+	+Close():error
+	+File():(*os.File, error)
+	+LocalAddr():Addr
+	+Read([]byte):(int ,error)
+	+ReadFrom([]byte):(int, Addr, error)
+	+ReadFromIP([]byte):(int, *IPAddr, error)
+	+ReadMsgIP([]byte, []byte):(int, int, int, *IPAddr, error)
+	+RemoteAddr():Addr
+	+SetDeadline(time.Time):error
+	+SetReadBuffer(int):error
+	+SetReadDeadline(time.Time):error
+	+SetWriteBuffer(int):error
+	+SetWriteDeadline(time.Time):error
+	+Write([]byte):(int, error)
+	+WriteMsgIP([]byte, []byte, *IPAddr):(int, int, error)
+	+WriteTo([]byte, Addr):(int, error)
+	+WriteToIP([]byte, *IPAddr):(int, error)
+}
+
+class IPMask([]byte) {
+	+Size():(int, int)
+	+String():string
+}
+
+class IPNet {
+	+IP:IP
+	+Mask:IPMask
+	+Contains(IP):bool
+	+Network():string
+	+String():string
+}
+
+class Interface {
+	+Index:int
+	+MTU:int
+	+Name:string
+	+HardwareAddr:HardwareAddr
+	+Flags:Flags
+	+Addrs():([]Addr, error)
+	+MulticastAddrs():([]Addr, error)
+}
+
+class InvalidAddrError {
+	+Error():string
+	+Temporary():bool
+	+Timeout():bool
+}
+
+interface Listener {
+	+Accept():(Conn, error)
+	+Close():error
+	+Addr():Addr
+}
+
+class MX {
+	+Host:string
+	+Pref:uint16
+}
+
+class NS {
+	+Host:string
+}
+
+class OpError {
+	+Op:string
+	+Net:string
+	+Addr:Addr
+	+Err:error
+	+Error():string
+	+Temporary():bool
+	+Timeout():bool
+}
+
+interface PacketConn {
+	+ReadFrom([]byte):(int, Addr, error)
+	+WriteTo([]byte, Addr):(int, error)
+	+Close():error
+	+LocalAddr():Addr
+	+SetDeadline(time.Time):error
+	+SetReadDeadline(time.Time):error
+	+SetWriteDeadline(time.Time):error
+}
+
+class ParseError {
+	+Type:string
+	+Text:string
+	+Error():string
+}
+
+class SRV {
+	+Target:string
+	+Port:uint16
+	+Priority:uint16
+	+Weight:uint16
+}
+
+class TCPAddr {
+	+IP:IP
+	+Port:int
+	+Zone:string
+	+Network():string
+	+String():string
+}
+
+class TCPConn {
+	+Close():error
+	+CloseRead():error
+	+CloseWrite():error
+	+File():(*os.File, error)
+	+LocalAddr():Addr
+	+Read([]byte):(int, error)
+	+ReadFrom(io.Reader):(int64, error)
+	+RemoteAddr():Addr
+	+SetDeadline(time.Time):error
+	+SetKeepAlive(bool):error
+	+SetKeepAlivePeriod(time.Duration):error
+	+SetLinger(int):error
+	+SetNoDelay(bool):error
+	+SetReadBuffer(int):error
+	+SetReadDeadline(time.Time):error
+	+SetWriteBuffer(int):error
+	+SetWriteDeadline(time.Time):error
+	+Write([]byte):(int, error)
+}
+
+class TCPListener {
+	+Accept():(Conn, error)
+	+AcceptTCP():(*TCPConn, error)
+	+Addr():Addr
+	+Close():error
+	+File():(*os.File, error)
+	+SetDeadline(time.Time):error
+}
+
+class UDPAddr {
+	+IP:IP
+	+Port:int
+	+Zone:string
+	+Network():string
+	+String():string
+}
+
+class UDPConn {
+	+Close():error
+	+File():(*os.File, error)
+	+LocalAddr():Addr
+	+Read([]byte):(int, error)
+	+ReadFrom([]byte):(int, Addr, error)
+	+ReadFromUDP([]byte):(int, *UDPAddr, error)
+	+ReadMsgUDP([]byte, []byte):(int, int, int, *UDPAddr, error)
+	+RemoteAddr():Addr
+	+SetDeadline(time.Time):error
+	+SetReadBuffer(int):error
+	+SetReadDeadline(time.Time):error
+	+SetWriteBuffer(int):error
+	+SetWriteDeadline(time.Time):error
+	+Write([]byte):(int, error)
+	+WriteMsgUDP([]byte, []byte, *UDPAddr):(int, int, error)
+	+WriteTo([]byte, Addr):(int, error)
+	+WriteToUDP([]byte, *UDPAddr):(int, error)
+}
+
+class UnixAddr {
+	+Name:string
+	+Net:string
+	+Network():string
+	+String():string
+}
+
+class UnixConn {
+	+Close():error
+	+CloseRead():error
+	+CloseWrite():error
+	+File():(*os.File, error)
+	+LocalAddr():Addr
+	+Read([]byte):(int, error)
+	+ReadFrom([]byte):(int, Addr, error)
+	+ReadFromUnix([]byte):(int, *UnixAddr, error)
+	+ReadMsgUnix([]byte, []byte):(int, int, int, *UnixAddr, error)
+	+RemoteAddr():Addr
+	+SetDeadline(time.Time):error
+	+SetReadBuffer(int):error
+	+SetReadDeadline(time.Time):error
+	+SetWriteBuffer(int):error
+	+SetWriteDeadline(time.Time):error
+	+Write([]byte):(int, error)
+	+WriteMsgUnix([]byte, []byte, *UnixAddr):(int, int, error)
+	+WriteTo([]byte, Addr):(int, error)
+	+WriteToUnix([]byte, *UnixAddr):(int, error)
+}
+
+class UnixListener {
+	+Accept():(Conn, error)
+	+AcceptUnix():(*UnixConn, error)
+	+Addr():Addr
+	+Close():error
+	+File():(*os.File, error)
+	+SetDeadline(time.Time):(error)
+}
+
+class UnknownNetworkError {
+	+Error():bool
+	+Temporary():bool
+	+Timeout():bool
+}
+
+Conn <|.. IPConn
+Conn <|.. TCPConn
+Conn <|.. UDPConn
+Conn <|.. UnixConn
+
+PacketConn <|.. IPConn
+
+Listener <|.. TCPListener
+Listener <|.. UnixListener
+
+Addr <|.. IPAddr
+Addr <|.. TCPAddr
+Addr <|.. UDPAddr
+Addr <|.. UnixAddr
+Addr <|.. IPNet
+
+Error <|.. AddrError
+Error <|.. DNSConfigError
+Error <|.. DNSError
+Error <|.. InvalidAddrError
+Error <|.. OpError
+Error <|.. UnknownNetworkError
+
+note top of net: package "net", defined as class just for generate diagram
+
+@enduml
