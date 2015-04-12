@@ -1,0 +1,21 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class ioutil {
+	+{static} Discard:io.Writer = devNull(0)
+
+	+NopCloser(io.Reader):io.ReadCloser
+	+ReadAll(io.Reader):([]byte, error)
+	+ReadDir(string):([]os.FileInfo, error)
+	+ReadFile(string):([]byte, error)
+	+TempDir(string, string):(String, error)
+	+TempFile(string, string):(*os.File, error)
+	+WriteFile(string, []byte, os.FileMode):error
+}
+
+note top of ioutil: package "ioutil", defined as class just for generate diagram
+
+@enduml

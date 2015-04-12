@@ -139,7 +139,7 @@ interface Error {
 	+Temporary():bool
 }
 
-class Flags(uint) {
+class Flags <<uint>> {
 	+FlagUp:Flags 1<<iota
 	+FlagBroadcast:Flags
 	+FlagLoopback:Flags
@@ -147,11 +147,11 @@ class Flags(uint) {
 	+FlagMulticast:Flags
 }
 
-class HardwareAddr([]byte){
+class HardwareAddr <<[]byte>> {
 	+String():string
 }
 
-class IP([]byte) {
+class IP <<[]byte>> {
 	+DefaultMask():IPMask
 	+Equal(IP):bool
 	+IsGlobalUnicast():bool
@@ -196,7 +196,7 @@ class IPConn {
 	+WriteToIP([]byte, *IPAddr):(int, error)
 }
 
-class IPMask([]byte) {
+class IPMask <<[]byte>> {
 	+Size():(int, int)
 	+String():string
 }

@@ -1,0 +1,82 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class bufio {
+	+{static} MaxScanTokenSize = 64 * 1024
+
+	+{static} ErrInvalidUnreadByte = errors.New("bufio: invalid use of UnreadByte")
+	+{static} ErrInvalidUnreadRune = errors.New("bufio: invalid use of UnreadRune")
+	+{static} ErrBufferFull = errors.New("bufio: buffer full")
+	+{static} ErrNegativeCount = errors.New("bufio: negative count")
+
+	+{static} ErrTooLong = errors.New("bufio.scanner: token too long")
+	+{static} ErrNegativeAdvance = errors.New("bufio.scanner: SplitFunc returns negative advance count")
+	+{static} ErrAdvanceTooFar = errors.New("bufio.scanner: SplitFunc returns advance count beyond input")
+
+	+{static} ScanBytes([]byte, bool):(int, []byte, error)
+	+{static} ScanLines([]byte, bool):(int, []byte, error)
+	+{static} ScanRunes([]byte, bool):(int, []byte, error)
+	+{static} ScanWords([]byte, bool):(int, []byte, error)
+
+	+{static} NewReadWriter(*Reader, *Writer):*ReadWriter
+	
+	+{static} NewReader(io.Reader):*Reader
+	+{static} NewReaderSize(io.Reader, int):*Reader
+
+	+{static} NewScanner(io.Reader):*Scanner
+
+	+{static} NewWriter(io.Writer):*Writer
+	+{static} NewWriterSize(io.Writer, int):*Writer
+}
+
+class ReadWriter {
+	+*Reader
+	+*Writer
+}
+
+class Reader {
+	+Buffered():int
+	+Peek(int):([]byte, error)
+	+Read([]byte):(int, error)
+	+ReadByte():(byte, error)
+	+ReadBytes(byte):([]byte, error)
+	+ReadLine():([]byte, bool, error)
+	+ReadRune():(rune, int, error)
+	+ReadSlice(byte):([]byte, error)
+	+ReadString(byte):(string, error)
+	+Reset(io.Reader)
+	+UnreadByte():error
+	+UnreadRune():error
+	+WriteTo(io.Writer):(int64, error)
+}
+
+class Scanner {
+	+Bytes():[]byte
+	+Err():error
+	+Scan():bool
+	+Split(SplitFunc)
+	+Text():string
+}
+
+class SplitFunc <<func([]byte, bool) (int, []byte, error)>> {
+	
+}
+
+class Writer {
+	+Available():int
+	+Buffered():int
+	+Flush():error
+	+ReadFrom(io.Reader):(int64, error)
+	+Reset(io.Writer)
+	+Write([]byte):(int, error)
+	+WriteByte(byte):error
+	+WriteRune(rune):(int, error)
+	+WriteString(string):(int, error)
+}
+
+note top of bufio: package "bufio", defined as class just for generate diagram
+
+@enduml

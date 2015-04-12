@@ -1,0 +1,74 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class strings {
+	+{static} Contains(string, string):bool
+	+{static} ContainsAny(string, string):bool
+	+{static} ContainsRune(string, rune):bool
+	+{static} Count(string, string):int
+	+{static} EqualFold(string, string):int
+	+{static} Fields(string):[]string
+	+{static} FieldsFunc(string, func(rune) bool):[]string
+	+{static} HasPrefix(string, string):bool
+	+{static} HasSuffix(string, string):bool
+	+{static} Index(string, string):int
+	+{static} IndexAny(string, string):int
+	+{static} IndexByte(string, byte):int
+	+{static} IndexFunc(string, func(rune) bool):int
+	+{static} IndexRune(string, rune):int
+	+{static} Join([]string, string):string
+	+{static} LastIndex(string, string):int
+	+{static} LastIndexAny(string, string):int
+	+{static} LastIndexFunc(string, func(rune) bool):int
+	+{static} Map(func(rune) rune, string):string
+	+{static} Repeat(string, int):string
+	+{static} Replace(string, string, string, int):string
+	+{static} Split(string, string):[]string
+	+{static} SplitAfter(string, string):[]string
+	+{static} SplitAfterN(string, string, int):[]string
+	+{static} SplitN(string, string, int):[]string
+	+{static} Title(string):string
+	+{static} ToLower(string):string
+	+{static} ToLowerSpecial(unicode.SpecialCase, string):string
+	+{static} ToTitle(string):string
+	+{static} ToTitleSpecial(unicode.SpecialCase, string):string
+	+{static} ToUpper(string):string
+	+{static} ToUpperSpecial(unicode.SpecialCase, string):string
+	+{static} Trim(string, string):string
+	+{static} TrimFunc(string, func(rune) bool):string
+	+{static} TrimLeft(string, string):string
+	+{static} TrimLeftFunc(string, func(rune) bool):string
+	+{static} TrimPrefix(string, string):string
+	+{static} TrimRight(string, string):string
+	+{static} TrimRightFunc(string, func(rune) bool):string
+	+{static} TrimSpace(string):string
+	+{static} TrimSuffix(string, string):string
+
+	+{static} NewReader(string):*Reader
+
+	+{static} NewReplacer(...string):*Replacer
+}
+
+class Reader {
+	+Len():int
+	+Read([]byte):(int, error)
+	+ReadAt([]byte, int64):(int, error)
+	+ReadByte():(byte, error)
+	+ReadRune():(rune, int, error)
+	+Seek(int64, int):(int64, error)
+	+UnreadByte():error
+	+UnreadRune():error
+	+WriteTo(io.Writer):(int64, error)
+}
+
+class Replacer {
+	+Replace(string):string
+	+WriteString(io.Writer, string):(int, error)
+}
+
+note top of strings: package "strings", defined as class just for generate diagram
+
+@enduml

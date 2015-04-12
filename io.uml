@@ -30,119 +30,119 @@ class io {
 }
 
 interface ByteReader {
-	ReadByte():(byte, error)
+	+ReadByte():(byte, error)
 }
 
 interface ByteScanner {
-	ByteReader
-	UnreadByte():error
+	+ByteReader
+	+UnreadByte():error
 }
 
 interface ByteWriter {
-	WriteByte(byte):error
+	+WriteByte(byte):error
 }
 
 interface Closer {
-	Close():error
+	+Close():error
 }
 
 class LimitedReader {
-	R:Reader
-	N:int64
-	Read([]byte):(int, error)
+	+R:Reader
+	+N:int64
+	+Read([]byte):(int, error)
 }
 
 class PipeReader {
-	Close():error
-	CloseWithError(error):error
-	Read([]byte):(int, error)
+	+Close():error
+	+CloseWithError(error):error
+	+Read([]byte):(int, error)
 }
 
 class PipeWriter {
-	Close():error
-	CloseWithError(error):error
-	Write([]byte):(int, error)
+	+Close():error
+	+CloseWithError(error):error
+	+Write([]byte):(int, error)
 }
 
 interface ReadCloser {
-	Reader
-	Closer
+	+Reader
+	+Closer
 }
 
 interface ReadSeeker {
-	Reader
-	Seeker
+	+Reader
+	+Seeker
 }
 
 interface ReadWriteCloser {
-	Reader
-	Writer
-	Closer
+	+Reader
+	+Writer
+	+Closer
 }
 
 interface ReadWriteSeeker {
-	Reader
-	Writer
-	Seeker
+	+Reader
+	+Writer
+	+Seeker
 }
 
 interface ReadWriter {
-	Reader
-	Writer
+	+Reader
+	+Writer
 }
 
 interface Reader {
-	Read([]byte):(int, error)
+	+Read([]byte):(int, error)
 }
 
 interface ReaderAt {
-	ReadAt([]byte, int64):(int, error)
+	+ReadAt([]byte, int64):(int, error)
 }
 
 interface ReaderFrom {
-	ReadFrom(Reader):(int64, error)
+	+ReadFrom(Reader):(int64, error)
 }
 
 interface RuneReader {
-	ReadRune():(rune, int, error)
+	+ReadRune():(rune, int, error)
 }
 
 interface RuneScanner {
-	RuneReader
-	UnreadRune():error
+	+RuneReader
+	+UnreadRune():error
 }
 
 class SectionReader {
-	Read([]byte):(int, error)
-	ReadAt([]byte, int64):(int, error)
-	Seek(int64, int):(int64, error)
-	Size():int64
+	+Read([]byte):(int, error)
+	+ReadAt([]byte, int64):(int, error)
+	+Seek(int64, int):(int64, error)
+	+Size():int64
 }
 
 interface Seeker {
-	Seek(int64, int):(int64, error)
+	+Seek(int64, int):(int64, error)
 }
 
 interface WriteCloser {
-	Writer
-	Closer
+	+Writer
+	+Closer
 }
 
 interface WriteSeeker {
-	Writer
-	Seeker
+	+Writer
+	+Seeker
 }
 
 interface Writer {
-	Write([]byte):(int, error)
+	+Write([]byte):(int, error)
 }
 
 interface WriterAt {
-	WriteAt([]byte, int64):(int, error)
+	+WriteAt([]byte, int64):(int, error)
 }
 
 interface WriterTo {
-	WriteTo(Writer):(int64, error)
+	+WriteTo(Writer):(int64, error)
 }
 
 ByteScanner ..|> ByteReader

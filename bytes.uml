@@ -1,0 +1,98 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class bytes {
+	+{static} MinRead = 512
+
+	+{static} ErrTooLarge = errors.New("bytes.Buffer: too large")
+
+	+{static} Compare([]byte, []byte):int
+	+{static} Contains([]byte, []byte):bool
+	+{static} Count([]byte, []byte):int
+	+{static} Equal([]byte, []byte):bool
+	+{static} EqualFold([]byte, []byte):bool
+	+{static} Fields([]byte):[][]byte
+	+{static} FieldsFunc([]byte, func(rune) bool):[][]byte
+	+{static} HasPrefix([]byte, []byte):bool
+	+{static} HasSuffix([]byte, []byte):bool
+	+{static} Index([]byte, []byte):int
+	+{static} IndexAny([]byte, string):int
+	+{static} IndexByte([]byte, byte):int
+	+{static} IndexFunc([]byte, func(rune) bool):int
+	+{static} IndexRune([]byte, rune):int
+	+{static} Join([][]byte, []byte):[]byte
+	+{static} LastIndex([]byte, []byte):int
+	+{static} LastIndexAny([]byte, string):int
+	+{static} LastIndexFunc([]byte, func(rune) bool):int
+	+{static} Map(func(rune) rune, []byte):[]byte
+	+{static} Repeat([]byte, int):[]byte
+	+{static} Replace([]byte, []byte, []byte, int):[]byte
+	+{static} Runes([]byte):[]rune
+	+{static} Split([]byte, []byte):[][]byte
+	+{static} SplitAfter([]byte, []byte):[][]byte
+	+{static} SplitAfterN([]byte, []byte, int):[][]byte
+	+{static} SplitN([]byte, []byte, int):[][]byte
+	+{static} Title([]byte):[]byte
+	+{static} ToLower([]byte):[]byte
+	+{static} ToLowerSpecial(unicode.SpecialCase, []byte):[]byte
+	+{static} ToTitle([]byte):[]byte
+	+{static} ToTitleSpecial(unicode.SpecialCase, []byte):[]byte
+	+{static} ToUpper([]byte):[]byte
+	+{static} ToUpperSpecial(unicode.SpecialCase, []byte):[]byte
+	+{static} Trim([]byte, string):[]byte
+	+{static} TrimFunc([]byte, func(rune) bool):[]byte
+	+{static} TrimLeft([]byte, string):[]byte
+	+{static} TrimLeftFunc([]byte, func(rune) bool):[]byte
+	+{static} TrimPrefix([]byte, []byte):[]byte
+	+{static} TrimRight([]byte, string):[]byte
+	+{static} TrimRightFunc([]byte, func(rune) bool):[]byte
+	+{static} TrimSpace([]byte):[]byte
+	+{static} TrimSuffix([]byte, []byte):[]byte
+
+	+{static} NewBuffer([]byte):*Buffer
+	+{static} NewBufferString(string):*Buffer
+
+	+{static} NewReader([]byte):*Reader
+}
+
+class Buffer {
+	+Bytes():[]byte
+	+Grow(int)
+	+Len():int
+	+Next(int):[]byte
+	+Read([]byte):(int, error)
+	+ReadByte():(byte, error)
+	+ReadBytes(byte):([]byte, error)
+	+ReadFrom(io.Reader):(int64, error)
+	+ReadRune():(rune, int, error)
+	+ReadString(byte):(string, error)
+	+Reset()
+	+String():string
+	+Truncate(int)
+	+UnreadByte():error
+	+UnreadRune():error
+	+Write([]byte):(int, err)
+	+WriteByte(byte):error
+	+WriteRune(rune):(int, error)
+	+WriteString(string):(int, error)
+	+WriteTo(io.Writer):(int64, error)
+}
+
+class Reader {
+	+Len():int
+	+Read([]byte):(int, error)
+	+ReadAt([]byte, int64):(int, error)
+	+ReadByte():(byte, error)
+	+ReadRune():(rune, int, error)
+	+Seek(int64, int):(int64, error)
+	+UnreadByte():error
+	+UnreadRune():error
+	+WriteTo(io.Writer):(int64, error)
+}
+
+note top of bytes: package "bytes", defined as class just for generate diagram
+
+@enduml

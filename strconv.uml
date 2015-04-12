@@ -1,0 +1,50 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class strconv {
+	+{static} IntSize
+
+	+{static} ErrRange = errors.New("value out of range")
+	+{static} ErrSyntax = errors.New("invalid syntax")
+
+	+{static} AppendBool([]byte, bool):[]byte
+	+{static} AppendFloat([]byte, float64, byte, int, int):[]byte
+	+{static} AppendInt([]byte, int64, int):[]byte
+	+{static} AppendQuote([]byte, string):[]byte
+	+{static} AppendQuoteRune([]byte, rune):[]byte
+	+{static} AppendQuoteRuneToASCII([]byte, rune):[]byte
+	+{static} AppendQuoteToASCII([]byte, string):[]byte
+	+{static} AppendUint([]byte, uint64, int):[]byte
+	+{static} Atoi(string):(int, error)
+	+{static} CanBackquote(string):bool
+	+{static} FormatBool(bool):string
+	+{static} FormatFloat(float64, byte, int, int):string
+	+{static} FormatInt(int64, int):string
+	+{static} FormatUint(uint64, int):string
+	+{static} IsPrint(rune):bool
+	+{static} Itoa(int):string
+	+{static} ParsBool(string):(bool, error)
+	+{static} ParseFloat(string, int):(float64, error)
+	+{static} ParseInt(string, int, int):(int64, error)
+	+{static} ParseUint(string, int, int):(uint64, error)
+	+{static} Quote(string):string
+	+{static} QuoteRune(rune):string
+	+{static} QuoteRuneToASCII(rune):string
+	+{static} QuoteToASCII(string):string
+	+{static} Unquote(string):(string, error)
+	+{static} UnquoteChar(string, byte):(rune, bool, string, error)
+}
+
+class NumError {
+	+Func:string
+	+Num:string
+	+Err:error
+	+Error():string
+}
+
+note top of strconv: package "strconv", defined as class just for generate diagram
+
+@enduml
