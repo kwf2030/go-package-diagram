@@ -1,0 +1,144 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class time {
+	+{static} ANSIC = "Mon Jan _2 15:04:05 2006"
+	+{static} UnixDate = "Mon Jan _2 15:04:05 MST 2006"
+	+{static} RubyDate = "Mon Jan 02 15:04:05 -0700 2006"
+	+{static} RFC822 = "02 Jan 06 15:04 MST"
+	+{static} RFC822Z = "02 Jan 06 15:04 -0700"
+	+{static} RFC850 = "Monday, 02-Jan-06 15:04:05 MST"
+	+{static} RFC1123 = "Mon, 02 Jan 2006 15:04:05 MST"
+	+{static} RFC1123Z = "Mon, 02 Jan 2006 15:04:05 -0700"
+	+{static} RFC3339 = "2006-01-02T15:04:05Z07:00"
+	+{static} RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
+	+{static} Kitchen = "3:04PM"
+
+	+{static} Stamp = "Jan _2 15:04:05"
+	+{static} StampMilli = "Jan _2 15:04:05.000"
+	+{static} StampMicro = "Jan _2 15:04:05.000000"
+	+{static} StampNano = "Jan _2 15:04:05.000000000"
+
+	+{static} After(Duration):<-chan Time
+	+{static} Sleep(Duration)
+	+{static} Tick(Duration):<-chan Time
+
+	+{static} ParseDuration(string):(Duration, error)
+	+{static} Since(Time):Duration
+
+	+{static} FixedZone(string, int):*Location
+	+{static} LoadLocation(string):(*Location, error)
+
+	+{static} NewTicker(Duration):*Ticker
+
+	+{static} Date(int, Month, int, int, int, int, int, *Location):Time
+	+{static} Now():Time
+	+{static} Parse(string, string):(Time, error)
+	+{static} ParseInLocation(string, string, *Location):(Time, error)
+	+{static} Unix(int64, int64):Time
+
+	+{static} AfterFunc(Duration, func()):*Timer
+	+{static} NewTimer(Duration):*Timer
+}
+
+class Duration <<int64>> {
+	+{static} Nanosecond Duration = 1
+	+{static} Microsecond Duration = 1000 * Nanosecond
+	+{static} Millisecond Duration = 1000 * Microsecond
+	+{static} Second Duration = 1000 * Millisecond
+	+{static} Minute Duration = 60 * Second
+	+{static} Hour Duration = 60 * Minute
+
+	+Hours():float64
+	+Minutes():float64
+	+Nanoseconds():int64
+	+Seconds():float64
+	+String():string
+}
+
+class Location {
+	+String():string
+}
+
+class Month <<int>> {
+	+String():string
+}
+
+class ParseError {
+	+Layout:string
+	+Value:string
+	+LayoutElem:string
+	+ValueElem:string
+	+Message:string
+	+Error():string
+}
+
+class Ticker {
+	+C:<-chan Time
+	+Stop()
+}
+
+class Time {
+	+Add(Duration):Time
+	+AddDate(int, int, int):Time
+	+After(Time):bool
+	+Before(Time):bool
+	+Clock():(int, int, int)
+	+Date():(int, int, int)
+	+Equal(Time):bool
+	+Format(string):string
+	+GobDecode([]byte):error
+	+GobEncode():([]byte, error)
+	+Hour():int
+	+ISOWeek():(int, int)
+	+In(*Location):Time
+	+IsZero():bool
+	+Local():Time
+	+Location():*Location
+	+MarshalBinary():([]byte, error)
+	+MarshalJSON():([]byte, error)
+	+MarshalText():([]byte, error)
+	+Minute():int
+	+Month():Month
+	+Nanosecond():int
+	+Round(Duration):Time
+	+Second():int
+	+String)():string
+	+Sub(Time):Duration
+	+Truncate(Duration):Time
+	+UTC():Time
+	+Unix():int64
+	+UnixNano():int64
+	+UnmarshalBinary([]byte), error
+	+UnmarshalJSON([]byte), error
+	+UnmarshaText([]byte), error
+	+Weekday():Weekday
+	+Year():int
+	+YearDay():int
+	+Zone():(Zone):(string, int)
+}
+
+class Timer {
+	+C:<-chan Time
+	+Reset(Duration):bool
+	+Stop():bool
+}
+
+class Weekday <<int>> {
+	+{static} Sunday Weekday = iota
+	+{static} Monday Weekday
+	+{static} Tuesday Weekday
+	+{static} Wednesday Weekday
+	+{static} Thursday Weekday
+	+{static} Friday Weekday
+	+{static} Saturday Weekday
+
+	+String():string
+}
+
+note top of time: package "time", defined as class just for generate diagram
+
+@enduml
