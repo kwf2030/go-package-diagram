@@ -198,7 +198,6 @@ class SyscallError {
 	+Error():string
 }
 
-
 note top of os: package "os", defined as class just for generate diagram
 
 @enduml

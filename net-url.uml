@@ -1,0 +1,65 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class url {
+	+{static} QueryEscape(string):string
+	+{static} QueryUnescape(string):(string, error)
+
+	+{static} Parse(string):(*URL, error)
+	+{static} ParseRequestURI(string):(*URL, error)
+
+	+{static} User(string):*Userinfo
+	+{static} UserPassword(string, string):*Userinfo
+
+	+{static} ParseQuery(string):(Values, error)
+}
+
+class Error {
+	+Op:string
+	+URL:string
+	+Err:error
+
+	+Error():string
+}
+
+class EscapeError <<string>> {
+	+Error():string
+}
+
+class URL {
+	+Scheme:string
+	+Opaque:string
+	+User:*Userinfo
+	+Host:string
+	+Path:string
+	+RawQuery:string
+	+Fragment:string
+
+	+IsAbs():bool
+	+Parse(string):(*URL, error)
+	+Query():Values
+	+RequestURI():string
+	+ResolveReference(*URL):*URL
+	+String():string
+}
+
+class Userinfo {
+	+Password():(string, bool)
+	+String():string
+	+Username():string
+}
+
+class Values <<map[string][]string>> {
+	+Add(string, string)
+	+Del(string)
+	+Encode():string
+	+Get(string):string
+	+Set(string, string)
+}
+
+note top of url: package "url", defined as class just for generate diagram
+
+@enduml

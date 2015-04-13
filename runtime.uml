@@ -101,12 +101,6 @@ class MemStats {
 	+NumGC:uint32
 	+EnableGC:bool
 	+DebugGC:bool
-	
-	+class [61]BySize {
-		+Size:uint32
-		+Mallocs:uint64
-		+Frees:uint64
-	}
 }
 
 class StackRecord {

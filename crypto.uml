@@ -1,0 +1,51 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class crypto {
+	+{static} RegisterHash(Hash, func() hash.Hash)
+}
+
+class Hash <<uint>> {
+	+{static} MD4:Hash = 1+iota
+	+{static} MD5
+	+{static} SHA1
+	+{static} SHA224
+	+{static} SHA256
+	+{static} SHA384
+	+{static} SHA512
+	+{static} MD5SHA1
+	+{static} RIPEMD160
+	+{static} SHA3_224
+	+{static} SHA3_256
+	+{static} SHA3_384
+	+{static} SHA3_512
+
+	+Available():bool
+	+HashFunc():Hash
+	+New():hash.Hash
+	+Size():int
+}
+
+class PrivateKey <<interface{}>> {
+	
+}
+
+class PublicKey <<interface{}>> {
+	
+}
+
+interface Signer {
+	+Public():PublicKey
+	+Sign(io.Reader, []byte, SignerOpts):([]byte, error)
+}
+
+interface SignerOpts {
+	+HashFunc():Hash
+}
+
+note top of crypto: package "crypto", defined as class just for generate diagram
+
+@enduml

@@ -1,0 +1,332 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class http {
+	+{static} StatusContinue = 100
+	+{static} StatusSwitchingProtocols = 101
+
+	+{static} StatusOK = 200
+	+{static} StatusCreated = 201
+	+{static} StatusAccepted = 202
+	+{static} StatusNonAuthoritativeInfo = 203
+	+{static} StatusNoContent = 204
+	+{static} StatusResetContent = 205
+	+{static} StatusPartialContent = 206
+
+	+{static} StatusMultipleChoices = 300
+	+{static} StatusMovedPermanently = 301
+	+{static} StatusFound = 302
+	+{static} StatusSeeOther = 303
+	+{static} StatusNotModified = 304
+	+{static} StatusUseProxy = 305
+	+{static} StatusTemporaryRedirect = 307
+
+	+{static} StatusBadRequest = 400
+	+{static} StatusUnauthorized = 401
+	+{static} StatusPaymentRequired = 402
+	+{static} StatusForbidden = 403
+	+{static} StatusNotFound = 404
+	+{static} StatusMethodNotAllowed = 405
+	+{static} StatusNotAcceptable = 406
+	+{static} StatusProxyAuthRequired = 407
+	+{static} StatusRequestTimeout = 408
+	+{static} StatusConflict = 409
+	+{static} StatusGone = 410
+	+{static} StatusLengthRequired = 411
+	+{static} StatusPreconditionFailed = 412
+	+{static} StatusRequestEntityTooLarge = 413
+	+{static} StatusRequestURITooLong = 414
+	+{static} StatusUnsupportedMediaType = 415
+	+{static} StatusRequestedRangeNotSatisfiable = 416
+	+{static} StatusExpectationFailed = 417
+	+{static} StatusTeapot = 418
+
+	+{static} StatusInternalServerError = 500
+	+{static} StatusNotImplemented = 501
+	+{static} StatusBadGateway = 502
+	+{static} StatusServiceUnavailable =503
+	+{static} StatusGatewayTimeout = 504
+	+{static} StatusHTTPVersionNotSupported = 505
+
+	+{static} DefaultMaxHeaderBytes = 1<<20
+	+{static} DefaultMaxIdleConnsPerHost = 2
+	+{static} TimeFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
+
+	+{static} ErrHeaderTooLong = &ProtocolError{"header too long"}
+	+{static} ErrShortBody = &ProtocolError{"entity body too short"}
+    +{static} ErrNotSupported = &ProtocolError{"feature not supported"}
+    +{static} ErrUnexpectedTrailer = &ProtocolError{"trailer header without chunked transfer encoding"}
+    +{static} ErrMissingContentLength = &ProtocolError{"missing ContentLength in HEAD response"}
+    +{static} ErrNotMultipart = &ProtocolError{"request Content-Type isn't multipart/form-data"}
+    +{static} ErrMissingBoundary = &ProtocolError{"no multipart boundary param in Content-Type"}
+
+    +{static} ErrWriteAfterFlush = errors.New("Conn.Write called after Flush")
+    +{static} ErrBodyNotAllowed  = errors.New("http: request method or response status code does not allow body")
+    +{static} ErrHijacked = errors.New("Conn has been hijacked")
+    +{static} ErrContentLength = errors.New("Conn.Write wrote more than the declared Content-Length")
+
+    +{static} DefaultClient = &Client{}
+    +{static} DefaultServeMux = NewServeMux()
+    +{static} ErrBodyReadAfterClose = errors.New("http: invalid Read on closed Body")
+
+    +{static} ErrHandlerTimeout = errors.New("http: Handler timeout")
+    +{static} ErrLineTooLong = internal.ErrLineTooLong
+    +{static} ErrMissingFile = errors.New("http: no such file")
+    +{static} ErrNoCookie = errors.New("http: named cookie not present")
+    +{static} ErrNoLocation = errors.New("http: no Location header in response")
+
+    +{static} CanonicalHeaderKey(string):string
+    +{static} DetectContentType([]byte]):string
+    +{static} Error(ResponseWriter, string, int)
+    +{static} Handle(string, Handler)
+    +{static} HandleFunc(string, func(ResponseWriter, *Request))
+    +{static} ListenAndServe(string, Handler):error
+    +{static} ListenAndServeTLS(string, string, string, Handler):error
+    +{static} MaxBytesReader(ResponseWriter, io.ReadCloser, int64):io.ReadCloser
+    +{static} NotFound(ResponseWriter, *request)
+    +{static} ParseHTTPVersion(string):(int, int, bool)
+    +{static} ParseTime(string):(time.Time, error)
+    +{static} ProxyFromEnvironment(*Request):(*url.URL, error)
+    +{static} ProxyFromURL(*url.URL):func(*Request) (*url.URL, error)
+    +{static} Redirect(ResponseWriter, *Request, string, int)
+    +{static} Serve(net.Listener, Handler):error
+    +{static} ServeContent(ResponseWriter, *Request, string, time.Time, io.ReadSeeker)
+    +{static} ServeFile(ResponseWriter, *Request, string)
+    +{static} SetCookie(ResponseWriter, *Cookie)
+    +{static} StatusText(int):string
+
+    +{static} FileServer(FileSystem):Handler
+    +{static} NotFoundHandler(string):Handler
+    +{static} RedirectHandler(string, int):Handler
+    +{static} StripPrefix(string, Handler):Handler
+    +{static} TimeoutHandler(Handler, time.Duration, string):Handler
+
+    +{static} NewRequest(string, string, io.Reader):(*Request, error)
+    +{static} ReadRequest(*bufio.Reader):(*Request, error)
+
+    +{static} Get(string):(*Response, error)
+    +{static} Head(string):(*Response, error)
+    +{static} Post(string, string, io.Reader):(*Response, error)
+    +{static} PostForm(string, url.Values):(*Response, error)
+    +{static} ReadResponse(*bufio.Reader, *Request):(*Response, error)
+
+    +{static} NewFileTransport(FileSystem):RoundTripper
+
+    +{static} NewServeMux():*ServeMux
+}
+
+class Client {
+	+Transport:RoundTripper
+	+CheckRedirect:func(*request, []*Request) error
+	+Jar:CookieJar
+	+Timeout:time.Duration
+
+	+Do(*request):(*Response, error)
+	+Get(string):(*Response, error)
+	+Head(string):(*Response, error)
+	+Post(string, string, io.Reader):(*Response, error)
+	+PostForm(string, url.Values):(*Response, error)
+}
+
+interface CloseNotifier {
+	CloseNotifier() <-chan bool
+}
+
+class ConnState <<int>> {
+	+StateNew:ConnState = iota
+	+StateActive
+	+StateIdle
+	+StateHijacked
+	+StateClosed
+
+	+String():string
+}
+
+class Cookie {
+	+Name:string
+	+Value:string
+	+Path:string
+	+Domain:string
+	+Expires:time.Time
+	+RawExpires:string
+
+	+MaxAge:int
+	+Secure:bool
+	+HttpOnly:bool
+	+Raw:string
+	+Unparsed:[]string
+
+	+String():string
+}
+
+interface CookieJar {
+	+SetCookies(*url.URL, []*Cookie)
+	+Cookie(*url.URL):[]*Cookie
+}
+
+class Dir <<string>> {
+	+Open(string):(File, error)
+}
+
+interface File {
+	+io.Closer
+	+io.Reader
+	+Readdir(int):([]os.FileInfo, error)
+	+Seek(int64, int):(int64, error)
+	+Stat():(os.FileInfo, error)
+}
+
+interface FileSystem {
+	+Open(string):(File, error)
+}
+
+interface Flusher {
+	+Flush()
+}
+
+interface Handler {
+	+ServeHTTP(ResponseWriter, *Request)
+}
+
+class HandlerFunc <<func(ResponseWriter, *Request)>> {
+	+ServeHTTP(ResponseWriter, *Request)
+}
+
+class Header <<map[string][]string>> {
+	+Add(string, string)
+	+Del(string)
+	+Get(string)
+	+Set(string)
+	+Write(io.Writer):error
+	+WriteSubset(io.Writer, map[string]bool):error
+}
+
+interface Hijacker {
+	+Hijack():(net.Conn, *bufio.ReadWriter, error)
+}
+
+class ProtocolError {
+	+ErrorString:string
+
+	+Error():string
+}
+
+class Request {
+	+Method:string
+	+URL *url.URL
+	+Proto:string
+	+ProtoMajor:int
+	+ProtoMinor:int
+	+Header:Header
+	+Body:io.ReadCloser
+	+ContentLength:int64
+	+TransferEncoding:[]string
+	+Close:bool
+	+Host:string
+	+Form:url.Values
+	+PostForm:url.Values
+	+MultipartForm:*multipart.Form
+	+Trailer:Header
+	+RemoteAddr:string
+	+RequestURI:string
+	+TLS:*tls:ConnectionState
+
+	+AddCookie(*Cookie)
+	+BasicAuth():(string, string, bool)
+	+Cookie(string):(*Cookie, error)
+	+Cookies():[]*Cookie
+	+FormFile(string):(multipart.File, *multipart.FileHeader, error)
+	+FormValue(string):string
+	+MultipartReader():(*Multipart.Reader, error)
+	+ParseForm():error
+	+ParseMultipartForm(int64):error
+	+ProtoAtLeast(int, int):bool
+	+Referer():string
+	+SetBasicAuth(string, string)
+	+UserAgent():string
+	+Write(io.Writer):error
+	+WriteProxy(io.Writer):error
+}
+
+class Response {
+	+Status:string
+	+StatusCode:int
+	+Proto:string
+	+ProtoMajor:int
+	+ProtoMinor:int
+	+Header:Header
+	+Body:io.ReadCloser
+	+ContentLength:int64
+	+TransferEncoding:[]string
+	+CLose:bool
+	+Trailer:Header
+	+Request:*Request
+	+TLS:*tls.ConnectionState
+
+	+Cookies():[]*Cookie
+	+Location():(*url.URL, error)
+	+ProtoAtLeast(int, int):bool
+	+Write(io.Writer):error
+}
+
+interface ResponseWriter {
+	+Header():Header
+	+Write([]byte):(int, error)
+	+WriteHeader(int)
+}
+
+interface RoundTripper {
+	+RoundTrip(*Request):(*Response, error)
+}
+
+class ServeMux {
+	+Handle(string, Handler)
+	+HandleFunc(string, func(ResponseWriter, *Request))
+	+Handler(*Request):(Handler, string)
+	+ServeHTTP(ResponseWriter, *Request)
+}
+
+class Server {
+	+Addr:string
+	+Handler:Handler
+	+ReadTimeout:time.Duration
+	+WriteTimeout:time.Duration
+	+MaxHeaderBytes:int
+	+TLSConfig:*tls.Config
+	+TLSNextProto:map[string]func(*Server, *tls.Conn, Handler)
+	+ConnState:func(net.Conn, ConnState)
+	+ErrorLog:*log.Logger
+
+	+ListenAndServe():error
+	+ListenerAndServeTLS(string, string):error
+	+Serve(net.Listener):error
+	+SetKeepAlivesEnabled(bool)
+}
+
+class Transport {
+	+Proxy:func(*Request):(*url.URL, error)
+	+Dial:func(string, string):(net.Conn, error)
+	+DialTLS:func(string, string):(net.Conn, error)
+	+TLSClientConfig:*tls.Config
+	+TLSHandshakeTimeout:time.Duration
+	+DisableKeepAlives:bool
+	+DisableCompression:bool
+	+MaxIdleConnsPerHost:int
+	+ResponseHeaderTimeout:time.Duration
+
+	+CancelRequest(*Request)
+	+CloseIdleConnections()
+	+RegisterProtocol(string, RoundTripper)
+	+RoundTrip(*Request):(*Response, error)
+}
+
+RoundTripper <|-- Transport
+Handler <|-- ServeMux
+Handler <|-- HandlerFunc
+
+note top of http: package "http", defined as class just for generate diagram
+
+@enduml
