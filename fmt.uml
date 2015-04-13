@@ -1,0 +1,63 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class fmt {
+	+{static} Errorf(string, ...interface{}):error
+	+{static} Fprint(io.Writer, ...interface{}):(int, error)
+	+{static} Fprintf(io.Writer, string, interface{}):(int, error)
+	+{static} Fprintln(io.Writer, ...interface{}):(int, error)
+	+{static} Fscan(io.Reader, ...interface{}):(int, error)
+	+{static} Fscanf(io.Reader, string, ...interfae{}):(int, error)
+	+{static} Fscanln(io.Reader, ...interface):(int, error)
+	+{static} Print(...interface{}):(int, error)
+	+{static} Printf(string, ...interfae{}):(int, error)
+	+{static} Println(...interface{}):(int, error)
+	+{static} Scan(...interface{}):(int, error)
+	+{static} Scanf(string, ...interface{}):(int, error)
+	+{static} Scanln(...interface{}):(int, error)
+	+{static} Sprint(...interface{}):string
+	+{static} Sprintf(string, ...interface{}):string
+	+{static} Sprintln(...interface{}):string
+	+{static} Sscan(string, ...interface{}):(int, error)
+	+{static} Sscanf(string, string, ...interface{}):(int, error)
+	+{static} Sscanln(string, ...interface{}):(int, error)
+}
+
+interface Formatter {
+	+Format(State, rune)
+}
+
+interface GoStringer {
+	+GoString():string
+}
+
+interface ScanState {
+	+ReadRune():(rune, int, error)
+	+UnreadRune():error
+	+SkipSpace()
+	+Token(bool, func(rune) bool):([]byte, error)
+	+Width():(int, bool)
+	+Read([]byte):(int, error)
+}
+
+interface Scanner {
+	+Scan(ScanState, rune):error
+}
+
+interface State {
+	+Write([]byte):(int, error)
+	+Width(int, bool)
+	+Precision():(int, bool)
+	+Flag(int):bool
+}
+
+interface Stringer {
+	+String() :string
+}
+
+note top of fmt: package "fmt", defined as class just for generate diagram
+
+@enduml

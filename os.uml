@@ -1,0 +1,204 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class os {
+	+{static} O_RDONLY:int = syscall.O_RDONLY
+	+{static} O_WRONLY:int = syscall.O_WRONLY
+	+{static} O_RDWR:int = syscall.O_RDWR
+	+{static} O_APPEND:int = syscall.O_APPEND
+	+{static} O_CREAT:int = syscall.O_CREAT
+	+{static} O_EXCL:int = syscall.O_EXCL
+	+{static} O_SYNC:int = syscall.O_SYNC
+	+{static} O_TRUNC:int = syscall.O_TRUNC
+
+	+{static} SEEK_SET:int = 0
+	+{static} SEEK_CUR:int = 1
+	+{static} SEEK_END:int = 2
+
+	+{static} PathSeparator = '/'
+	+{static} PathListSeparator = ':'
+
+	+{static} DevNull = '/dev/null'
+
+	+{static} ErrInvalid = errors.New("invalid argument")
+	+{static} ErrPermission = errors.New("permission denied")
+	+{static} ErrExist = errors.New("file already exists")
+	+{static} ErrNotExist = errors.New("file does not exist")
+
+	+{static} Stdin = NewFile(uintptr(syscall.Stdin), "/dev/stdin")
+	+{static} Stdout = NewFile(uintptr(syscall.Stdin), "/dev/stdout")
+	+{static} Stderr = NewFile(uintptr(syscall.Stdin), "/dev/stderr")
+
+	+{static} Args:[]string
+
+	+{static} Chdir(string):error
+	+{static} Chmod(string, FileMode):error
+	+{static} Chown(string, int, int):error
+	+{static} Chtimes(string, time.Time, time.Time):error
+	+{static} Clearenv()
+	+{static} Environ():[]string
+	+{static} Exit(int)
+	+{static} Expand(string, func(string) string):string
+	+{static} ExpandEnv(string):string
+	+{static} Getegid():int
+	+{static} Getenv():string
+	+{static} Geteuid():int
+	+{static} Getgid():int
+	+{static} Getgroups():([]int, error)
+	+{static} Getpagesize():int
+	+{static} Getpid():int
+	+{static} Getppid():int
+	+{static} Getuid():int
+	+{static} Getwd():(string, error)
+	+{static} Histname():(string, error)
+	+{static} IsExist(error):bool
+	+{static} IsNotExist(error):bool
+	+{static} IsPathSeparator(uint8):bool
+	+{static} IsPermission(error):bool
+	+{static} Lchown(string, int, int):error
+	+{static} Link(string, string):error
+	+{static} Mkdir(string, FileMode):error
+	+{static} MkdirAll(string, FileMode):error
+	+{static} NewSyscallError(string, error):error
+	+{static} Readlink(string):(string, error)
+	+{static} Remove(string):error
+	+{static} RemoveAll(string):error
+	+{static} Rename(string, string):error
+	+{static} SameFile(FileInfo, FileInfo):bool
+	+{static} Setenv(string, string):error
+	+{static} Symlink(string, string):error
+	+{static} TempDir():string
+	+{static} Truncate(string, int64):error
+	+{static} Unsetenv(string):error
+
+	+{static} Create(string):(*File, error)
+	+{static} NewFile(uintptr, string):*File
+	+{static} Open(string):(*File, error)
+	+{static} OpenFile(string, int, FileMode):(*File, error)
+	+{static} Pipe():(*File, *File, error)
+
+	+{static} Lstat(string):(FileInfo, error)
+	+{static} Stat(string):(FileInfo, error)
+
+	+FindProcess(int):(*Process, error)
+	+StartProcess(string, []string, *ProcAttr):(*Process, error)
+}
+
+class File {
+	+Chdir():error
+	+Chmod(FileMode):error
+	+Chown(int, int):error
+	+Close():error
+	+Fd():uintptr
+	+Name():string
+	+Read([]byte):(int, error)
+	+ReadAt([]byte, int64):(int, error)
+	+Readdir(int):([]FileInfo, error)
+	+Readdirnames(int):([]string, error)
+	+Seek(int64, int):(int64, error)
+	+Stat():(FileInfo, error)
+	+Sync():error
+	+Truncate(int64):error
+	+Write([]byte):(int, error)
+	+WriteAt([]byte, int64):(int, error)
+	+WriteString(string):(int, error)
+}
+
+interface FileINfo {
+	Name():string
+	Size():int64
+	Mode():FileMode
+	ModeTime():time.Time
+	IsDir():bool
+	Sys():interface{}
+}
+
+class FileMode <<uint32>> {
+	+{static} ModeDir:FileMode
+	+{static} ModeAppend
+	+{static} ModeExclusive
+	+{static} ModeTemporary
+	+{static} ModeSymlink
+	+{static} ModeDevice
+	+{static} ModeNamedPipe
+	+{static} ModeSocket
+	+{static} ModeSetuid
+	+{static} ModeSetgid
+	+{static} ModeCharDevice
+	+{static} ModeSticky
+
+	+{static} ModeType
+	+{static} ModePerm
+
+	+IsDir():bool
+	IsRegular():bool
+	+Perm():FileMode
+	+String():string
+}
+
+class LinkError {
+	+Op:string
+	+Old:string
+	+New:string
+	+Err:string
+
+	Error():string
+}
+
+class PathError {
+	+Op:string
+	+Path:string
+	+Err:string
+
+	+Error():string
+}
+
+class ProcAttr {
+	+Dir:string
+	+Env:[]string
+	+Files:[]*File
+	+Sys:*syscall.SysProcAttr
+}
+
+class Process {
+	+Pid:int
+
+	+Kill():error
+	+Release():error
+	+Signal(Signal):error
+	+Wait():(*ProcessState, error)
+}
+
+class ProcessState {
+	+Exited():bool
+	+Pid():int
+	+String():string
+	+Success():bool
+	+Sys():interface{}
+	+SysUsage():interface{}
+	+SystemTime():time.Duration
+	+UserTime:time.Duration
+}
+
+interface Signal {
+	+{static} Interrupt Signal = syscall.SIGINT
+	+{static} KILL Signal = syscall.SIGKILL
+
+	+String():string
+	+Signal()
+}
+
+class SyscallError {
+	+Syscall:string
+	+Err:error
+
+	+Error():string
+}
+
+
+note top of os: package "os", defined as class just for generate diagram
+
+@enduml

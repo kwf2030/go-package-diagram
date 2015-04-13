@@ -1,0 +1,58 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class sync {
+	+{static} NewCond(Locker):*Cond
+}
+
+class Cond {
+	+L:Locker
+	+Broadcast()
+	+Signal()
+	+Wait()
+}
+
+interface Locker {
+	+Lock()
+	+Unlock()
+}
+
+class Mutex {
+	+Lock()
+	+Unlock()
+}
+
+class Once {
+	+Do(func())
+}
+
+class Pool {
+	+New:func() interface{}
+
+	+Get():interface{}
+	+Put(interface{})
+}
+
+class RWMutex {
+	+Lock()
+	+RLock()
+	+RLock():Locker
+	+RUnlock()
+	+Unlock()
+}
+
+class WaitGroup {
+	+Add(int)
+	+Done()
+	+Wait()
+}
+
+Locker <|-- Mutex
+Locker <|-- RWMutex
+
+note top of sync: package "sync", defined as class just for generate diagram
+
+@enduml

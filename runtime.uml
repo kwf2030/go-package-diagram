@@ -1,0 +1,124 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class runtime {
+	+{static} Compiler = "gc"
+	+{static} GOARCH
+	+{static} GOOS
+
+	+{static} MemProfileRate = 512 * 1024
+
+	+{static} BlockProfile([]BlockProfileRecord):(int, bool)
+	+{static} Breakpoint()
+	+{static} CPUProfile():[]byte
+	+{static} Caller(int):(uintptr, string, int, bool)
+	+{static} Callers(int, []uintptr):int
+	+{static} GC()
+	+{static} GOMAXPROCS(int):int
+	+{static} GOROOT():string
+	+{static} Goexit()
+	+{static} GoroutineProfile([]StackRecord):(int, bool)
+	+{static} Gosched()
+	+{static} LockOSThread()
+	+{static} MemProfile([]MemProfileRecord, bool):(int, bool)
+	+{static} NumCPU():int
+	+{static} NumCgoCall():int
+	+{static} NumGoroutine():int
+	+{static} ReadMemStats(*MemStats)
+	+{static} SetBlockProfileRate(int)
+	+{static} SetCPUProfileRate(int)
+	+{static} SetFinalizer(interface{}, interface{})
+	+{static} Stack([]byte, bool):int
+	+{static} ThreadCreateProfile([]StackRecord):(int, bool)
+	+{static} UnlockOSThread()
+	+{static} Version():string
+
+	+{static} FuncForPC(uintptr):*Func
+}
+
+class BlockProfileRecord {
+	+Count:int64
+	+Cycles:int64
+	+StackRecord
+}
+
+interface Error {
+	+error
+	+RuntimeError()
+}
+
+class Func {
+	+Entry():uintptr
+	+FileLine(uintptr):(string, int)
+	+Name():string
+}
+
+class MemProfileRecord {
+	+AllocBytes:int64
+	+FreeBytes:int64
+	+AllocObjects int64
+	+FreeObjects int64
+	Stack0:[32]uintptr
+
+	+InUseBytes():int64
+	+InUseObjects:int64
+	+Stack():[]uintptr
+}
+
+class MemStats {
+	+Alloc:uint64
+	+TotalAlloc:uint64
+	+Sys:uint64
+	+Lookups:uint64
+	+Mallocs:uint64
+	+Frees:uint64
+
+	+HeapAlloc:uint64
+	+HeapSys:uint64
+	+HeapIdle:uint64
+	+HeapInuse:uint64
+	+HeapReleased:uint64
+	+HeadObjects:uint64
+
+	+StackInuse:uint64
+	+StackSys:uint64
+	+MSpanINuse:uint64
+	+MSpanSys:uint64
+	+MCacheInuse:uint64
+	+MCacheSys:uint64
+	+BuckHashSys:uint64
+	+GCSys:uint64
+	+OtherSys:uint64
+
+	+NextGC:uint64
+	+LastGC:uint64
+	+PauseTotalNs:uint64
+	+PauseNs:[256]uint64
+	+PauseEnd:[256]uint64
+	+NumGC:uint32
+	+EnableGC:bool
+	+DebugGC:bool
+	
+	+class [61]BySize {
+		+Size:uint32
+		+Mallocs:uint64
+		+Frees:uint64
+	}
+}
+
+class StackRecord {
+	+Stack0:[32]uintptr
+	+Stack():[]uintptr
+}
+
+class TypeAssertionError {
+	+Error():string
+	+RuntimeError()
+}
+
+note top of runtime: package "runtime", defined as class just for generate diagram
+
+@enduml

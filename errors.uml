@@ -1,0 +1,13 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class errors {
+	+{static} New(string):error
+}
+
+note top of errors: package "errors", defined as class just for generate diagram
+
+@enduml
