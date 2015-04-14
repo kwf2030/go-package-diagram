@@ -107,7 +107,7 @@ class File {
 	+WriteString(string):(int, error)
 }
 
-interface FileINfo {
+interface FileInfo {
 	Name():string
 	Size():int64
 	Mode():FileMode

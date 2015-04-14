@@ -61,7 +61,7 @@ class MemProfileRecord {
 	+FreeBytes:int64
 	+AllocObjects int64
 	+FreeObjects int64
-	Stack0:[32]uintptr
+	+Stack0:[32]uintptr
 
 	+InUseBytes():int64
 	+InUseObjects:int64
