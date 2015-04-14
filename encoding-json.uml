@@ -1,0 +1,107 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class json {
+	Compact(*bytes.Buffer, []byte):error
+	HTMLEscape(*bytes.Buffer, []byte)
+	Indent(*bytes.Buffer, []byte, string, string):error
+	Marshal(interface{}):([]byte, error)
+	MarshalIntent(interface{}, string, string):error
+	Unmarshal([]byte, interface{}):error
+
+	NewDecoder(io.Reader):*Decoder
+
+	NewEncoder(io.Writer):*Encoder
+}
+
+class Decoder {
+	Buffered():io.Reader
+	Decode(interface{}):error
+	UseNumber()
+}
+
+class Encoder {
+	Encode(interface{}):error
+}
+
+class InvalidUTF8Error {
+	S:string
+
+	Error():string
+}
+
+class INvalidUnmarshalError {
+	Type:reflect.Type
+
+	Error():string
+}
+
+interface Marshaler {
+	MarshalJSON():([]byte, error)
+}
+
+class MarshalerError {
+	Type:reflect.Type
+	Err:error
+
+	Error():string
+}
+
+class Number <<string>> {
+	Float64():(float64, error)
+	int64():(int64, error)
+	String():string
+}
+
+class RawMessage <<[]byte>> {
+	MarshalJSON():([]byte, error)
+	UnmarshalJSON([]byte):error
+}
+
+class SyntaxError {
+	Offset:int64
+
+	Error():string
+}
+
+class UnmarshalFieldError {
+	Key:string
+	Type:reflect.Type
+	Field:reflect.StructField
+
+	Error():string
+}
+
+class UnmarshalTypeError {
+	Value:string
+	Type:reflect.Type
+
+	Error():string
+}
+
+interface Unmarshaler {
+	UnmarshalJSON([]byte):error
+}
+
+class UnsupportedTypeError {
+	Type:reflect.Type
+
+	Error():string
+}
+
+class UnsupportedValueError {
+	Value:reflect.Value
+	Str:string
+
+	Error():string
+}
+
+RawMessage --|> Marshaler
+RawMessage --|> Unmarshaler
+
+note top of json: package "json", defined as class just for generate diagram
+
+@enduml

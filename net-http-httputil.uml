@@ -1,0 +1,56 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class httputil {
+	+{static} ErrPersistEOF = &http.ProtocolError{ErrorString: "persistent connection closed"}
+	+{static} ErrClosed = &http.ProtocolError{ErrorString: "connection closed by user"}
+	+{static} ErrPipeline = &http.ProtocolError{ErrorString: "pipeline error"}
+
+	+{static} ErrLineTooLong = internal.ErrLineTooLong
+
+	+{static} DumpRequest(*http.Request, bool):([]byte, error)
+	+{static} DumpRequestOut(*http.Request, bool):([]byte, error)
+	+{static} DumpResponse(*http.Response, bool):([]byte, error)
+	+{static} NewChunkedReader(io.Reader):io.Reader
+	+{static} NewChunkedWriter(io.Writer):io.WritCloser
+
+	+{static} NewClientConn(net.Conn, *bufio.Reader):*ClientConn
+	+{static} NewProxyClientConn(net.Conn, *bufio.Reader):*ClientConn
+
+	+{static} NewSingleHostReverseProxy(*url.URL):*ReverseProxy
+
+	+{static} NewServerConn(net.Conn, *bufio.Reader):*ServerConn
+}
+
+class ClientConn {
+	+Close():error
+	+Do(*http.Request):(*http.Response, error)
+	+Hijack():(net.Conn, *bufio.Reader)
+	+Pending():int
+	+Read(*http.Request):(*http.Response, error)
+	+Write(*http.Request):error
+}
+
+class ReverseProxy {
+	+Director:func(*http.Request)
+	+Transport:http.RoundTripper
+	+FlushInterval:time.Duration
+	+ErrorLog:*log.Logger
+
+	+ServeHTTP(http.ResponseWriter, *http.Request)
+}
+
+class ServerConn {
+	Close():error
+	Hijack():(net.Conn, *bufio.Reader)
+	Pending():int
+	Read():(*http.Request, error)
+	Write(*http.Request, *http.Response):error
+}
+
+note top of httputil: package "httputil", defined as class just for generate diagram
+
+@enduml

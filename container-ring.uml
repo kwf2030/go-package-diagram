@@ -1,0 +1,25 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class ring {
+	+{static} New(int):*Ring
+}
+
+class Ring {
+	+Value:interface{}
+
+	+Do(func(interface{}))
+	+Len():int
+	+Link(*Ring):*Ring
+	+Move(int):*Ring
+	+Next():*Ring
+	+Prev():*Ring
+	+Unlink(int):*Ring
+}
+
+note top of ring: package "ring", defined as class just for generate diagram
+
+@enduml

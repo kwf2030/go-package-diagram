@@ -1,0 +1,26 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class hex {
+	+{static} ErrLength = errors.New("encoding/hex: old length hex string")
+
+	+{static} Decode([]byte, []byte):(int, error)
+	+{static} DecodeString(string):([]byte, error)
+	+{static} DecodedLen(int):int
+	+{static} Dump([]byte):int
+	+{static} Dumper(io.Writer):io.WriteCloser
+	+{static} Encode([]byte, []byte):int
+	+{static} EncodeToString([]byte):string
+	+{static} EncodedLen(int):int
+}
+
+class InvalidByteError <<byte>> {
+	Error():string
+}
+
+note top of hex: package "hex", defined as class just for generate diagram
+
+@enduml

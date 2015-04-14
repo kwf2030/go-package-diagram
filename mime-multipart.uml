@@ -1,0 +1,61 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class multipart {
+	+{static} NewReader(io.Reader, string):*Reader
+
+	+{static} NewWriter(io.Writer):*Writer
+}
+
+class File {
+	+io.Reader
+	+io.ReaderAt
+	+io.Seeker
+	+io.Closer
+}
+
+class FileHeader {
+	+Filename:string
+	+Header:textproto.MIMEHeader
+
+	+Open():(File, error)
+}
+
+class Form {
+	+Value:map[string][]string
+	+File:map[string][]*FileHeader
+
+	+RemoveAll():error
+}
+
+class Part {
+	+Header:textproto.MIMEHeader
+
+	+Close():error
+	+FileName():string
+	+FormValue():string
+	+Read([]byte):(int, error)
+}
+
+class Reader {
+	+NextPart():(*Part, error)
+	+ReadForm(int64):(*Form, error)
+}
+
+class Writer {
+	+Boundary():string
+	+Close():error
+	+CreateFormField(string):(io.Writer, error)
+	+CreateFormFile(string, string):(io.Writer, error)
+	+CreatePart(textproto.MIMEHeader):(io.Writer, error)
+	+FormDataContentType():string
+	+SetBoundary(string):error
+	+WriteField(string, string):error
+}
+
+note top of multipart: package "multipart", defined as class just for generate diagram
+
+@enduml

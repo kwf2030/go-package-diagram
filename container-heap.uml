@@ -1,0 +1,23 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class heap {
+	+{static} Fix(Interface, int)
+	+{static} Init(Interface)
+	+{static} Pop(Interface):interface{}
+	+{static} Push(Interface, interface{})
+	+{static} Remove(Interface, int):interface{}
+}
+
+interface Interface {
+	+sort.Interface
+	+Push(interface{})
+	+Pop():interface{}
+}
+
+note top of heap: package "heap", defined as class just for generate diagram
+
+@enduml

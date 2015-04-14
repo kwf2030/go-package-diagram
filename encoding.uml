@@ -1,0 +1,23 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+interface BinaryMarshaler {
+	MarshalBinary():([]byte, error)
+}
+
+interface BinaryUnmarshaler {
+	UnmarshalBinary([]byte):error
+}
+
+interface TextMarshaler {
+	MarshalText():([]byte, error)
+}
+
+interface TextUnmarshaler {
+	UnmarshalText([]byte):error
+}
+
+@enduml

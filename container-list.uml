@@ -1,0 +1,38 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class list {
+	+{static} New():*List
+}
+
+class Element {
+	+Value:interface{}
+
+	+Next():*Element
+	+Prev():*Element
+}
+
+class List {
+	+Back():*Element
+	+Front():*Element
+	+init():*List
+	+InsertAfter(interface{}, *Element):*Element
+	+InsertBefore(interface{}, *Element):*Element
+	+Len():int
+	+MoveAfter(*Element, *Element)
+	+MoveBefore(*Element, *Element)
+	+MoveToBack(*Element)
+	+MoveToFront(*Element)
+	+PushBack(interface{}):*Element
+	+PushBackList(*List)
+	+PushFront(interface{}):*Element
+	+PushFrontList(*List)
+	+Remove(*Element):interface
+}
+
+note top of list: package "list", defined as class just for generate diagram
+
+@enduml

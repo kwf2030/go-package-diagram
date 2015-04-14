@@ -1,0 +1,15 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class signal {
+	+{static} Notify(chan<-os.Signal, ...os.Signal)
+
+	+{static} Stop(chan<-os.Signal)
+}
+
+note top of signal: package "signal", defined as class just for generate diagram
+
+@enduml

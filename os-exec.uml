@@ -1,0 +1,53 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class exec {
+	+{static} ErrNotFound = errors.New("executable file not found in $PATH")
+
+	+{static} LookPath(string):(string, error)
+
+	+{static} Command(string, ...string):*Cmd
+}
+
+class Cmd {
+	+Path:string
+	+Args:[]string
+	+Env:[]string
+	+Dir:string
+	+Stdin:io.Reader
+	+Stdout:io.Writer
+	+StdErr:io.Writer
+	+ExtraFiles:[]*os.File
+	+SysProcAttr:*syscall.SysProcAttr
+	+Process:*os.Process
+	+ProcessState:*os.ProcessState
+
+	+CombinedOutput():([]byte, error)
+	+Output():([]byte, error)
+	+Run():error
+	+Start():error
+	+StderrPipe():(io.ReadCloser, error)
+	+StdoutPipe():(io.ReadCloser, error)
+	+StdinPipe():(io.WriteCloser, error)
+	+Wait():error
+}
+
+class Error {
+	+Name:string
+	+Err:error
+	
+	+Error():string
+}
+
+class ExitError {
+	+*os.ProcessState
+
+	+Error():string
+}
+
+note top of exec: package "exec", defined as class just for generate diagram
+
+@enduml

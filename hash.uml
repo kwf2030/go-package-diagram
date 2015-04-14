@@ -1,0 +1,28 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+interface Hash {
+	+io.Writer
+	+Sum([]byte):[]byte
+	+Reset()
+	+Size():int
+	+BlockSize():int
+}
+
+interface Hash32 {
+	+Hash
+	+Sum32():uint32
+}
+
+interface Hash64 {
+	+Hash
+	+Sum64():uint64
+}
+
+Hash <|.. Hash32
+Hash <|.. Hash64
+
+@enduml

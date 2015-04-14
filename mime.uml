@@ -1,0 +1,16 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class mime {
+	+{static} AddExtensionType(string, string):error
+	+{static} FormatMediaType(string, map[string]string):error
+	+{static} ParseMediaType(string):(string, map[string]string, error)
+	+{static} TypeByExtension(string):string
+}
+
+note top of mime: package "mime", defined as class just for generate diagram
+
+@enduml

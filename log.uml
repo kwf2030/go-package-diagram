@@ -1,0 +1,51 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class log {
+	+{static} Ldate = 1 << iota
+	+{static} Ltime
+	+{static} Lmicrosecond
+	+{static} Llongfile
+	+{static} LstdFlags = Ldate | Ltime
+
+	+{static} Fatal(...interface{})
+	+{static} Fatalf(string, ...interface{})
+	+{static} Fatalln(...interface{})
+	+{static} Flags():int
+	+{static} Panic(...interface{})
+	+{static} Panicf(string, ...interface{})
+	+{static} Panicln(...interface{})
+	+{static} Prefix():string
+	+{static} Print(...interface{})
+	+{static} Printf(string, ...interface{})
+	+{static} Println(...interface{})
+	+{static} SetFlags(int)
+	+{static} SetOutput(io.Writer)
+	+{static} SetPrefix(string)
+
+	+{static} New(io.Writer, string, int):*Logger
+}
+
+class Logger {
+	+Fatal(...interface{})
+	+Fatalf(string, ...interface{})
+	+Fatalln(...interface{})
+	+Flags():int
+	+Output(int, string):error
+	+Panic(...interface{})
+	+Panicf(string, ...interface{})
+	+Panicln(...interface{})
+	+Prefix():string
+	+Print(...interface{})
+	+Printf(string, ...interface{})
+	+Println(...interface{})
+	+SetFlags(int)
+	+SetPrefix(string)
+}
+
+note top of log: package "log", defined as class just for generate diagram
+
+@enduml

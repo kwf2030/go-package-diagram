@@ -1,0 +1,32 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class base64 {
+	+{static} StdEncoding
+	+{static} URLEncoding
+
+	+{static} NewDecoder(*Encoding, io.Reader):io.Reader
+	+{static} NewEncoder(*Encoding, io.Writer):io.Writer
+
+	+{static} NewEncoding(string):*Encoding
+}
+
+class CorruptInputError <<int64>> {
+	Error():string
+}
+
+class Encoding {
+	+Decode([]byte, []byte):(int, error)
+	+DecodeString(string):(int, error)
+	+DecodedLen(int):int
+	+Encode([]byte, []byte)
+	+EncodeToString([]byte):string
+	+EncodedLen(int):int
+}
+
+note top of base64: package "base64", defined as class just for generate diagram
+
+@enduml
