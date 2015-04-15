@@ -1,0 +1,47 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class gzip {
+	+{static} NoCpmpression = flate.NoCompression
+	+{static} BestSpeed = flate.BestSpeed
+	+{static} BestCompression = flate.BestCompression
+	+{static} DefaultCpmpression = flate.DefaultCpmpression
+
+	+{static} ErrChecksum = errors.New("gzip: invalid checksum")
+	+{static} ErrHeader = errors.New("gzip: invalid header")
+
+	+{static} NewReader(io.Reader):(*Reader, error)
+	+{static} NewWriter(io.Writer):*Writer
+	+{static} NewWriterLevel(io.Writer, int):(*Writer, error)
+}
+
+class Header {
+	+Comment:string
+	+Extra:[]byte
+	+ModeTime:time.Time
+	+Name:string
+	+OS:byte
+}
+
+class Reader {
+	+Header
+	+Close():error
+	+Multistream():bool
+	+Read([]byte):(int, error)
+	+Reset(io.Reader):error
+}
+
+class Writer {
+	+Header
+	+Close():error
+	+Flush():error
+	+Reset(io.Reader):error
+	+Write([]byte):(int, error)
+}
+
+note top of gzip: package "gzip", defined as class just for generate diagram
+
+@enduml

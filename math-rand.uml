@@ -1,0 +1,56 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class rand {
+	+{static} ExpFloat64():float64
+	+{static} Float32():float32
+	+{static} Float64():float64
+	+{static} Int():int
+	+{static} Int31():int32
+	+{static} Int31n(int32):int32
+	+{static} Int63():int64
+	+{static} Int63n(int64):int64
+	+{static} Intn(int):int
+	+{static} NormFloat64():float64
+	+{static} Perm(int):[]int
+	+{static} Seed(int64)
+	+{static} Uint32():uint32
+
+	+{static} New(Source):*Rand
+
+	+{static} NewSource(int64):Source
+
+	+{static} NewZipf(*Rand, float64, float64, uint64):*Zipf
+}
+
+class Rand {
+	+ExpFloat64():float64
+	+Float32():float32
+	+Float64():float64
+	+Int():int
+	+Int31():int32
+	+Int31n(int32):int32
+	+Int63():int64
+	+Int63n(int64):int64
+	+Intn(int):int
+	+NormFloat64():float64
+	+Perm(int):[]int
+	+Seed(int64)
+	+Uint32():uint32
+}
+
+interface Source {
+	+Int63():int64
+	+Seek(int64)
+}
+
+ class Zipf {
+ 	Uint64():uint64
+ }
+
+note top of rand: package "rand", defined as class just for generate diagram
+
+@enduml

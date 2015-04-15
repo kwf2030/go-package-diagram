@@ -1,0 +1,14 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class html {
+	+{static} EscapeString(string):string
+	+{static} UnescapeString(string):string
+}
+
+note top of html: package "html", defined as class just for generate diagram
+
+@enduml

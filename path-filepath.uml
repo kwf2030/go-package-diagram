@@ -1,0 +1,40 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class filepath {
+	+{static} Separator = os.PathSeparator
+	+{static} ListSeparator = os.PathListSeparator
+
+	+{static} ErrBadPattern = errors.New("syntax error in pattern")
+	+{static} SkipDir = errors.New("skip this directory")
+
+	+{static} Abs(string):(string, error)
+	+{static} Base(string):string
+	+{static} Clean(string):string
+	+{static} Dir(string):string
+	+{static} EvalSymlinks(string):(string, error)
+	+{static} Ext(string):string
+	+{static} FromSlash(string):string
+	+{static} Glob(string):([]string, error)
+	+{static} HasPrefix(string, string):bool
+	+{static} IsAbs(string):bool
+	+{static} Join(...string):string
+	+{static} Match(string, string):(bool, error)
+	+{static} Rel(string, string):(string, error)
+	+{static} Split(string):(string, string)
+	+{static} SplitList(string):string
+	+{static} ToSlash(string):string
+	+{static} VolumnName(string):string
+	+{static} Walk(string, WalkFunc):error
+}
+
+class WalkFunc <<func(string, os.FileInfo, error) error>> {
+	
+}
+
+note top of filepath: package "filepath", defined as class just for generate diagram
+
+@enduml

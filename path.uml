@@ -1,0 +1,22 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class path {
+	+{static} ErrBadPattern = errors.New("syntax error in pattern")
+
+	+{static} Base(string):string
+	+{static} Clean(string):string
+	+{static} Dir(string):string
+	+{static} Ext(string):string
+	+{static} IsAbs(string):bool
+	+{static} Join(...string):string
+	+{static} Match(string, string):(bool, error)
+	+{static} Split(string):(string, string)
+}
+
+note top of path: package "path", defined as class just for generate diagram
+
+@enduml

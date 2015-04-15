@@ -1,0 +1,60 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class scanner {
+	+{static} ScanIdents = 1 << -Ident
+	+{static} ScanInts = 1 << -Int
+	+{static} ScanFloats = 1 << -Float
+	+{static} ScanChars = 1 << -Char
+	+{static} ScanStrings = 1 << -String
+	+{static} ScanRawStrings = 1 << -RawString
+	+{static} ScanComments = 1 << -Comment
+	+{static} SkipComments = 1 << -skipComment
+	+{static} GoTokens = ScanIdents | ScanFloats | ScanChars | ScanStrings | ScanRawStrings | ScanComments | SkipComments
+
+	+{static} EOF = -(iota + 1)
+	+{static} Ident
+	+{static} Int
+	+{static} Float
+	+{static} Char
+	+{static} String
+	+{static} RawString
+	+{static} Comment
+
+	+{static} GoWhitespace = 1<<'\t' | 1<<'\n' | 1<<'\r' | 1<<' '
+
+	+{static} TokenString(rune):string
+}
+
+class Position {
+	+Filename:string
+	+Offset:int
+	+Line:int
+	+Column:int
+
+	+IsValid():bool
+	+String():string
+}
+
+class Scanner {
+	+Error:func(*Scanner, string)
+	+ErrorCount:int
+	+Mode:uint
+	+Whitespace:uint64
+	+IsIdentRune:func(rune, int) bool
+	+Position
+
+	+Init(io.Reader):*Scanner
+	+Next():rune
+	+Peek():rune
+	+Pos():Position
+	+Scan():rune
+	+TokenText():string
+}
+
+note top of scanner: package "scanner", defined as class just for generate diagram
+
+@enduml

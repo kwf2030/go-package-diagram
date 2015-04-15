@@ -1,0 +1,62 @@
+@startuml
+skinparam {
+	defaultFontName Tohama
+	defaultFontSize 14
+}
+
+class sort {
+	+{static} Float64s([]float64)
+	+{static} Float64sAreSorted([]float64):bool
+	+{static} Ints([]int)
+	+{static} IntsAreSorted([]int):bool
+	+{static} IsSorted(Interface):bool
+	+{static} Search(int, func(int) bool):int
+	+{static} SearchFloat64s([]float64, float64):int
+	+{static} SearchInts([]int, int]):int
+	+{static} SearchStrings([]string, string):int
+	+{static} Sort(Interface)
+	+{static} Stable(Interface)
+	+{static} Strings([]string])
+	+{static} StringsAreSorted([]string]):bool
+
+	+{static} IsSorted(Interface):bool
+	+{static} IsSorted(Interface):bool
+}
+
+class Float64Slice <<[]float64>> {
+	+Len():int
+	+Less(int, int):bool
+	+Search(float64):int
+	+Sort()
+	+Swap(int, int)
+}
+
+class IntSlice <<[]int>> {
+	+Len():int
+	+Less(int, int):bool
+	+Search(int):int
+	+Sort()
+	+Swap(int, int)
+}
+
+interface Interface {
+	+Len():int
+	+Less(int, int):bool
+	+Swap(int, int)
+}
+
+class StringSlice <<[]string>> {
+	+Len():int
+	+Less(int, int):bool
+	+Search(string):int
+	+Sort()
+	+Swap(int, int)
+}
+
+Interface <|-- Float64Slice
+Interface <|-- IntSlice
+Interface <|-- StringSlice
+
+note top of sort: package "sort", defined as class just for generate diagram
+
+@enduml
